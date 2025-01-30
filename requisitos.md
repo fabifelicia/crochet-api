@@ -43,5 +43,4 @@
 3. **Implantação**
     - A implantação deve ser realizada em 1 semana após a conclusão dos testes.
 
-![alt text](arquitetura.png)
-![alt text](der.png)
+![alt text](images/arquitetura.png)
