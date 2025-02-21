@@ -23,17 +23,17 @@ async function getProductsByTexRange(texStart: number, texEnd: number) : Promise
 
 async function getProductsByName(name:string) : Promise<Product[]> {
     return new Promise((resolve, reject) => {
-        return resolve(products.filter(product => product.name === name).sort((a : any, b : any) => a - b))
+        return resolve(products.filter(product => product.name.toLowerCase() === name.toLowerCase()).sort((a : any, b : any) => a - b))
     })
 }
 
 async function getProductsByBrand(brand:string) : Promise<Product[]> {
     return new Promise((resolve, reject) => {
-        return resolve(products.filter(product => product.brand === brand).sort((a : any, b : any) => a - b))
+        return resolve(products.filter(product => product.brand.toLowerCase() === brand.toLowerCase()).sort((a : any, b : any) => a - b))
     })
 }
 
-async function getProducts() : Promise<Product[]> {
+async function getAllProducts() : Promise<Product[]> {
     return new Promise((resolve, reject) => {
         return resolve(products);
     })
@@ -45,5 +45,5 @@ export default {
     getProductsByName,
     getProductsByBrand,
     getProductById,
-    getProducts
+    getAllProducts
 }
