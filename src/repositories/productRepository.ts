@@ -1,7 +1,8 @@
  
-import Product from "src/models/Product";
+import Product from "../models/Product";
+import { data } from "../samples/data"
 
-const products: Product[] = [];
+const products: Product[] = data;
 
 async function getProductById(id: number) : Promise<Product | undefined> {
     return new Promise((resolve, reject) => {
