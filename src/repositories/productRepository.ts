@@ -4,21 +4,25 @@ import { data } from "../samples/data"
 
 const products: Product[] = data;
 
-async function getProductById(id: number) : Promise<Product | undefined> {
+async function getProductById(id: number | null) : Promise<Product | undefined> {
     return new Promise((resolve, reject) => {
         return resolve(products.find(product => product.id === id))
     })
 }
 
-async function getProductsByTex(tex: number) : Promise<Product[]> {
+async function getProductsByTex(tex: number | null) : Promise<Product[]> {
     return new Promise((resolve, reject) => {
         return resolve(products.filter(product => product.tex === tex).sort((a : any, b : any) => a - b))
     })
 }
 
-async function getProductsByTexRange(texStart: number, texEnd: number) : Promise<Product[]> {
+async function getProductsByTexRange(texStart: number | null, texEnd: number | null) : Promise<Product[]> {
     return new Promise((resolve, reject) => {
-        return resolve(products.filter(product => product.tex >= texStart && product.tex <= texEnd).sort((a : any, b : any) => a - b))
+        if (texStart == null || texEnd == null) {
+            reject
+        } else {
+            return resolve(products.filter(product => product.tex >= texStart && product.tex <= texEnd).sort((a : any, b : any) => a - b))
+        }
     })
 }
 
