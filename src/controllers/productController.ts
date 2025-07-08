@@ -1,104 +1,101 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import productRepository from "../repositories/productRepository";
 
-async function getAllProducts(req: Request, res: Response, next: NextFunction) {
-  const products = await productRepository.getAllProducts();
-  res.json(products);
-}
-
-async function getProductById(req: Request, res: Response, next: NextFunction) {
-  try {
-    const id = Number(req.query.id) || null;
-
-    if (!id) {
-      res.status(400).json({ message: "Invalid ID" });
-    }
-
-    const product = await productRepository.getProductById(id);
-    product
-      ? res.status(200).json(product)
-      : res.status(404).json({ message: "Not Found" });
-  } catch (error) {
-    next(error);
+export async function getProductByIdQuery(id: number) {
+  if (!id || isNaN(id)) {
+    throw { status: 400, message: "Invalid ID" };
   }
+  const product = await productRepository.getProductById(id);
+  if (!product) throw { status: 404, message: "Product Not Found" };
+  return product;
 }
 
-async function getProductsByTex(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const tex = Number(req.params.tex) || null;
-    if (!tex) {
-      res.status(404).json({ message: "Invalid TEX" });
-    }
-
-    const product = await productRepository.getProductsByTex(tex);
-    product
-      ? res.status(200).json(product)
-      : res.status(404).json({ message: "Not Found" });
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function getProductsByTexRange(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const texStart = parseInt(req.params.texStart);
-    const texEnd = parseInt(req.params.texEnd);
-
-    if (isNaN(texStart) || isNaN(texEnd)) {
-      return res.status(400).json({ message: "Invalid TEX range" });
-    }
-
-    const product = await productRepository.getProductsByTexRange(
-      texStart,
-      texEnd
-    );
-    product
-      ? res.status(200).json(product)
-      : res.status(404).json({ message: "Not Found" });
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function getProductsByBrand(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const brand = req.params.brand;
+export async function getProductsByBrandQuery(brand: string) {
   const products = await productRepository.getProductsByBrand(brand);
-  products.length > 0
-    ? res.status(200).json(products)
-    : res.status(404).json({ message: "Not Found" });
+  if (!products.length) throw { status: 404, message: "Brand Not Found" };
+  return products;
 }
 
-async function getProductsByName(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const name = req.params.name;
+export async function getProductsByNameQuery(name: string) {
   const products = await productRepository.getProductsByName(name);
-  products.length > 0
-    ? res.status(200).json(products)
-    : res.status(404).json({ message: "Not Found" });
+  if (!products.length) throw { status: 404, message: "Name Not Found" };
+  return products;
+}
+
+export async function getProductsByTexQuery(tex: number) {
+  if (!tex || isNaN(tex)) {
+    throw { status: 400, message: "Invalid TEX" };
+  }
+  const product = await productRepository.getProductsByTex(tex);
+  if (!product) throw { status: 404, message: "Product Not Found" };
+  return product;
+}
+
+export async function getProductsByTexRangeQuery(
+  texStart: number,
+  texEnd: number
+) {
+  if (isNaN(texStart) || isNaN(texEnd)) {
+    throw { status: 400, message: "Invalid TEX range" };
+  }
+  const product = await productRepository.getProductsByTexRange(texStart, texEnd);
+  if (!product) throw { status: 404, message: "Products Not Found" };
+  return product;
+}
+
+export async function getAllProductsQuery() {
+  return await productRepository.getAllProducts();
+}
+
+const getProducts: RequestHandler = async (req, res, next) => {
+  try {
+    if (req.query.id) {
+      const id = Number(req.query.id);
+      const product = await getProductByIdQuery(id);
+      res.status(200).json(product);
+      return;
+    }
+    if (req.query.brand) {
+      const products = await getProductsByBrandQuery(String(req.query.brand));
+      res.status(200).json(products);
+      return;
+    }
+    if (req.query.name) {
+      const products = await getProductsByNameQuery(String(req.query.name));
+      res.status(200).json(products);
+      return;
+    }
+    if (req.query.tex) {
+      const tex = Number(req.query.tex);
+      const product = await getProductsByTexQuery(tex);
+      res.status(200).json(product);
+      return;
+    }
+    if (req.query.texStart && req.query.texEnd) {
+      const texStart = Number(req.query.texStart);
+      const texEnd = Number(req.query.texEnd);
+      const product = await getProductsByTexRangeQuery(texStart, texEnd);
+      res.status(200).json(product);
+      return;
+    }
+    // Sem filtro, retorna todos
+    const products = await getAllProductsQuery();
+    res.json(products);
+  } catch (error: any) {
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal Server Error" });
+  }
 }
 
 export default {
-  getAllProducts,
-  getProductById,
-  getProductsByBrand,
-  getProductsByName,
-  getProductsByTex,
-  getProductsByTexRange,
+  getProducts,
+  getProductByIdQuery,
+  getProductsByBrandQuery,
+  getProductsByNameQuery,
+  getProductsByTexQuery,
+  getProductsByTexRangeQuery,
+  getAllProductsQuery,
 };
 
 
