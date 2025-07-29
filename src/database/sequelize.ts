@@ -3,11 +3,16 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-if (!process.env.DATABASE_URL) {
+const connectionString =
+  process.env.NODE_ENV === 'production'
+    ? process.env.DATABASE_URL!           
+    : process.env.DATABASE_PUBLIC_URL!; 
+
+if (!connectionString) {
   throw new Error("DATABASE_URL não definida");
 }
 
-const sequelize = new Sequelize("crochet", process.env.DATABASE_URL!, {
+const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
   logging: false,
@@ -16,6 +21,7 @@ const sequelize = new Sequelize("crochet", process.env.DATABASE_URL!, {
       require: true,
       rejectUnauthorized: false,
     },
+    keepAlive: true,
   },
 });
 

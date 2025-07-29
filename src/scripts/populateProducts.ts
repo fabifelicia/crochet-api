@@ -1,6 +1,6 @@
-import Product from "src/models/Product";
-import sequelize from "src/database/sequelize";
-import { productsMock } from "src/mocks/productsMock";
+import Product from "../models/Product";
+import sequelize from "../database/sequelize";
+import { productsMock } from "../mocks/productsMock";
 
 async function populate() {
   try {
