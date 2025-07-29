@@ -6,8 +6,6 @@ export default class Product extends Model {
   public name!: string;
   public tex!: number;
   public brand!: string;
-public createdAt!: Date;
-  
 }
 
 Product.init({
@@ -28,13 +26,9 @@ Product.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
 },
 {
     sequelize,
     tableName: "products",
-    timestamps: true,
+    timestamps: false,
 });

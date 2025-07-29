@@ -3,19 +3,20 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const dbUser = process.env.DB_USER;
-const dbPassword = process.env.DB_PASSWORD;
-
-if (!dbUser || !dbPassword) {
-  throw new Error("Database credentials are not set in environment variables.");
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL não definida");
 }
 
-const sequelize = new Sequelize("crochet", dbUser, dbPassword,
-  {
-    host: "localhost",
-    dialect: "postgres",
-    logging: false
-  }
-);
+const sequelize = new Sequelize("crochet", process.env.DATABASE_URL!, {
+  dialect: "postgres",
+  protocol: "postgres",
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+});
 
 export default sequelize;

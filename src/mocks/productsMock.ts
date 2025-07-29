@@ -1,4 +1,4 @@
-export const data = [
+export const productsMock = [
     {
         "id": 1,
         "name": "Amigurumi",
