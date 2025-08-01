@@ -1,11 +1,10 @@
 import app from './app';
 import sequelize from './database/sequelize';
 
-import dotenv from 'dotenv';
+import { env } from './config/env';
 
-dotenv.config();
 
-const PORT = parseInt(`${process.env.PORT || 3000}`);
+const PORT = parseInt(`${env.PORT || 3000}`);
 
 async function startServer() {
   try {
