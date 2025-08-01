@@ -8,7 +8,7 @@ const config: Config = {
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
-  },  
+  },
   clearMocks: true,
   coverageDirectory: 'coverage',
   collectCoverage: true,

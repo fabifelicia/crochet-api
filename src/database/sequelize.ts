@@ -1,10 +1,8 @@
 import { Sequelize } from 'sequelize';
-import { env } from '../config/env'
+import { env } from '../config/env';
 
 const connectionString =
-  env.NODE_ENV === 'production'
-    ? env.DATABASE_URL!
-    : env.DATABASE_PUBLIC_URL!;
+  env.NODE_ENV === 'production' ? env.DATABASE_URL! : env.DATABASE_PUBLIC_URL!;
 
 if (!connectionString) {
   throw new Error('DATABASE_URL não definida');

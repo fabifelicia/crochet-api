@@ -118,7 +118,10 @@ describe('productController.getProducts', () => {
   });
 
   it('deve retornar produtos por faixa de tex', async () => {
-    const products = [{ id: 4, tex: 200 }, { id: 5, tex: 300 }];
+    const products = [
+      { id: 4, tex: 200 },
+      { id: 5, tex: 300 },
+    ];
     req = { query: { texStart: '100', texEnd: '300' } };
     (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValue(products);
 
@@ -153,7 +156,9 @@ describe('productController.getProducts', () => {
 
   it('deve retornar erro 500 em caso de exceção inesperada', async () => {
     req = { query: { id: '1' } };
-    (productRepository.getProductById as jest.Mock).mockRejectedValue(new Error('Internal Server Error'));
+    (productRepository.getProductById as jest.Mock).mockRejectedValue(
+      new Error('Internal Server Error')
+    );
 
     await productController.getProducts(req as Request, res as Response, next);
 

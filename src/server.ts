@@ -3,7 +3,6 @@ import sequelize from './database/sequelize';
 
 import { env } from './config/env';
 
-
 const PORT = parseInt(`${env.PORT || 3000}`);
 
 async function startServer() {

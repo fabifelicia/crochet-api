@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "npx nodemon src/server.ts ==watch 'src/' -e ts",
     "compile": "npx tsc",
-    "start": "node ./dist/server.js",
+    "start": "node ./dist/src/server.js",
     "test": "jest --coverage",
     "populate": "ts-node src/scripts/populateProducts.ts",
     "lint": "eslint . --ext .ts",
