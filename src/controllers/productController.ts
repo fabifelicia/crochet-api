@@ -36,7 +36,7 @@ export async function getProductsByTexRangeQuery(texStart: number, texEnd: numbe
     throw { status: 400, message: 'Invalid TEX range' };
   }
   const product = await productRepository.getProductsByTexRange(texStart, texEnd);
-  if (!product) throw { status: 404, message: 'Products Not Found' };
+  if (!product || !product.length) throw { status: 404, message: 'Products Not Found' };
   return product;
 }
 
