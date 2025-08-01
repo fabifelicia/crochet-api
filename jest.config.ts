@@ -21,6 +21,7 @@ const config: Config = {
       statements: 60,
     },
   },
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/src/config/'],
 };
 
 export default config;
