@@ -1,5 +1,5 @@
-import Product from "../models/Product";
-import { Op } from "sequelize";
+import Product from '../models/Product';
+import { Op } from 'sequelize';
 
 async function getProductById(id: number | null): Promise<Product | null> {
   if (id == null) {
@@ -17,7 +17,7 @@ async function getProductsByTex(tex: number | null): Promise<Product[]> {
     where: {
       tex,
     },
-    order: [["id", "ASC"]],
+    order: [['id', 'ASC']],
   });
 }
 
@@ -35,7 +35,7 @@ async function getProductsByTexRange(
         [Op.between]: [texStart, texEnd],
       },
     },
-    order: [["id", "ASC"]],
+    order: [['id', 'ASC']],
   });
 }
 
@@ -50,10 +50,9 @@ async function getProductsByName(name: string): Promise<Product[]> {
         [Op.iLike]: name,
       },
     },
-    order: [["id", "ASC"]],
+    order: [['id', 'ASC']],
   });
 }
-
 
 async function getProductsByBrand(brand: string): Promise<Product[]> {
   if (!brand) {
@@ -66,7 +65,7 @@ async function getProductsByBrand(brand: string): Promise<Product[]> {
         [Op.iLike]: brand,
       },
     },
-    order: [["id", "ASC"]],
+    order: [['id', 'ASC']],
   });
 }
 

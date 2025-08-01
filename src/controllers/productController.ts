@@ -1,45 +1,42 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
-import productRepository from "../repositories/productRepository";
+import { RequestHandler } from 'express';
+import productRepository from '../repositories/productRepository';
 
 export async function getProductByIdQuery(id: number) {
   if (!id || isNaN(id)) {
-    throw { status: 400, message: "Invalid ID" };
+    throw { status: 400, message: 'Invalid ID' };
   }
   const product = await productRepository.getProductById(id);
-  if (!product) throw { status: 404, message: "Product Not Found" };
+  if (!product) throw { status: 404, message: 'Product Not Found' };
   return product;
 }
 
 export async function getProductsByBrandQuery(brand: string) {
   const products = await productRepository.getProductsByBrand(brand);
-  if (!products.length) throw { status: 404, message: "Brand Not Found" };
+  if (!products.length) throw { status: 404, message: 'Brand Not Found' };
   return products;
 }
 
 export async function getProductsByNameQuery(name: string) {
   const products = await productRepository.getProductsByName(name);
-  if (!products.length) throw { status: 404, message: "Name Not Found" };
+  if (!products.length) throw { status: 404, message: 'Name Not Found' };
   return products;
 }
 
 export async function getProductsByTexQuery(tex: number) {
   if (!tex || isNaN(tex)) {
-    throw { status: 400, message: "Invalid TEX" };
+    throw { status: 400, message: 'Invalid TEX' };
   }
   const product = await productRepository.getProductsByTex(tex);
-  if (!product) throw { status: 404, message: "Product Not Found" };
+  if (!product) throw { status: 404, message: 'Product Not Found' };
   return product;
 }
 
-export async function getProductsByTexRangeQuery(
-  texStart: number,
-  texEnd: number
-) {
+export async function getProductsByTexRangeQuery(texStart: number, texEnd: number) {
   if (isNaN(texStart) || isNaN(texEnd)) {
-    throw { status: 400, message: "Invalid TEX range" };
+    throw { status: 400, message: 'Invalid TEX range' };
   }
   const product = await productRepository.getProductsByTexRange(texStart, texEnd);
-  if (!product) throw { status: 404, message: "Products Not Found" };
+  if (!product) throw { status: 404, message: 'Products Not Found' };
   return product;
 }
 
@@ -47,7 +44,7 @@ export async function getAllProductsQuery() {
   return await productRepository.getAllProducts();
 }
 
-const getProducts: RequestHandler = async (req, res, next) => {
+const getProducts: RequestHandler = async (req, res) => {
   try {
     if (req.query.id) {
       const id = Number(req.query.id);
@@ -78,15 +75,14 @@ const getProducts: RequestHandler = async (req, res, next) => {
       res.status(200).json(product);
       return;
     }
-    // Sem filtro, retorna todos
+
     const products = await getAllProductsQuery();
     res.json(products);
-  } catch (error: any) {
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || "Internal Server Error" });
+  } catch (error) {
+    const err = error as { status?: number; message?: string };
+    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
   }
-}
+};
 
 export default {
   getProducts,
@@ -97,6 +93,3 @@ export default {
   getProductsByTexRangeQuery,
   getAllProductsQuery,
 };
-
-
-

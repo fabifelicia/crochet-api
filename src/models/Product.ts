@@ -1,5 +1,5 @@
-import { DataTypes, Model } from "sequelize";
-import sequelize from "../database/sequelize";
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../database/sequelize';
 
 export default class Product extends Model {
   public id!: number;
@@ -8,27 +8,29 @@ export default class Product extends Model {
   public brand!: string;
 }
 
-Product.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+Product.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    tex: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    brand: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  tex: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  brand: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-},
-{
+  {
     sequelize,
-    tableName: "products",
+    tableName: 'products',
     timestamps: false,
-});
+  }
+);

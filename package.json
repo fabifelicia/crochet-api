@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "npx nodemon src/server.ts ==watch 'src/' -e ts",
     "compile": "npx tsc",
     "start": "node ./dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "populate": "ts-node src/scripts/populateProducts.ts"
+    "test": "jest --coverage",
+    "populate": "ts-node src/scripts/populateProducts.ts",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write ."
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Fabiana Barreto",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -23,13 +27,25 @@
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
     "@types/pg": "^8.15.4",
     "@types/sequelize": "^4.28.20",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "jest": "^30.0.5",
     "nodemon": "^3.1.9",
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.38.0"
   }
 }
