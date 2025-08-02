@@ -32,6 +32,11 @@ jobs:
         run: npm run lint
 
       - name: Run tests
+        env:
+          PORT: ${{ secrets.PORT }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_PUBLIC_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
+          NODE_ENV: "test"
         run: npm test
 
       - name: Build project
