@@ -1,6 +1,9 @@
 import { Op } from 'sequelize';
 import Product from '../src/models/Product';
 import productRepository from '../src/repositories/productRepository';
+import { productsMock } from '../src/mocks/productsMock';
+
+const product = productsMock;
 
 jest.mock('../src/models/Product');
 
@@ -11,13 +14,12 @@ describe('productRepository', () => {
 
   describe('getProductById', () => {
     it('should return a product when ID exists', async () => {
-      const mockProduct = { id: 1, name: 'Amigurumi' } as Product;
-      (Product.findByPk as jest.Mock).mockResolvedValue(mockProduct);
+      (Product.findByPk as jest.Mock).mockResolvedValue(product);
 
       const result = await productRepository.getProductById(1);
 
       expect(Product.findByPk).toHaveBeenCalledWith(1);
-      expect(result).toEqual(mockProduct);
+      expect(result).toEqual(product);
     });
 
     it('should return null when ID is null', async () => {
@@ -28,8 +30,7 @@ describe('productRepository', () => {
 
   describe('getProductsByTex', () => {
     it('should return products with matching tex', async () => {
-      const mockProducts = [{ id: 1, tex: 492 }] as Product[];
-      (Product.findAll as jest.Mock).mockResolvedValue(mockProducts);
+      (Product.findAll as jest.Mock).mockResolvedValue(product);
 
       const result = await productRepository.getProductsByTex(492);
 
@@ -37,7 +38,7 @@ describe('productRepository', () => {
         where: { tex: 492 },
         order: [['id', 'ASC']],
       });
-      expect(result).toEqual(mockProducts);
+      expect(result).toEqual(product);
     });
 
     it('should return empty array when tex is null', async () => {
@@ -48,8 +49,7 @@ describe('productRepository', () => {
 
   describe('getProductsByTexRange', () => {
     it('should return products within range', async () => {
-      const mockProducts = [{ id: 1, tex: 500 }] as Product[];
-      (Product.findAll as jest.Mock).mockResolvedValue(mockProducts);
+      (Product.findAll as jest.Mock).mockResolvedValue(product);
 
       const result = await productRepository.getProductsByTexRange(400, 600);
 
@@ -60,7 +60,7 @@ describe('productRepository', () => {
         order: [['id', 'ASC']],
       });
 
-      expect(result).toEqual(mockProducts);
+      expect(result).toEqual(product);
     });
 
     it('should return empty array if start or end is null', async () => {
@@ -71,8 +71,7 @@ describe('productRepository', () => {
 
   describe('getProductsByName', () => {
     it('should return matching products', async () => {
-      const mockProducts = [{ name: 'Anne' }] as Product[];
-      (Product.findAll as jest.Mock).mockResolvedValue(mockProducts);
+      (Product.findAll as jest.Mock).mockResolvedValue(product);
 
       const result = await productRepository.getProductsByName('Anne');
 
@@ -80,7 +79,7 @@ describe('productRepository', () => {
         where: { name: { [Op.iLike]: 'Anne' } },
         order: [['id', 'ASC']],
       });
-      expect(result).toEqual(mockProducts);
+      expect(result).toEqual(product);
     });
 
     it('should return empty array if name is empty', async () => {
@@ -91,13 +90,12 @@ describe('productRepository', () => {
 
   describe('getAllProducts', () => {
     it('should return all products', async () => {
-      const mockProducts = [{ name: 'Anne' }] as Product[];
-      (Product.findAll as jest.Mock).mockResolvedValue(mockProducts);
+      (Product.findAll as jest.Mock).mockResolvedValue(product);
 
       const result = await productRepository.getAllProducts();
 
       expect(Product.findAll).toHaveBeenCalled();
-      expect(result).toEqual(mockProducts);
+      expect(result).toEqual(product);
     });
   });
 });

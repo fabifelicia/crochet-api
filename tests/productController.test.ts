@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import productController from '../src/controllers/productController';
 import productRepository from '../src/repositories/productRepository';
+import { productsMock } from '../src/mocks/productsMock';
 
 jest.mock('../src/repositories/productRepository');
+
+const product = productsMock;
 
 describe('productController.getProducts', () => {
   let req: Partial<Request>;
@@ -25,8 +28,7 @@ describe('productController.getProducts', () => {
     jest.clearAllMocks();
   });
 
-  it('deve retornar produto por ID', async () => {
-    const product = { id: 1, name: 'Produto A' };
+  it('should return product by id', async () => {
     req = { query: { id: '1' } };
     (productRepository.getProductById as jest.Mock).mockResolvedValue(product);
 
@@ -37,7 +39,7 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith(product);
   });
 
-  it('deve retornar erro 404 se produto por ID não for encontrado', async () => {
+  it('should return 404 status if product by id not found', async () => {
     req = { query: { id: '999' } };
     (productRepository.getProductById as jest.Mock).mockResolvedValue(null);
 
@@ -48,19 +50,18 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith({ message: 'Product Not Found' });
   });
 
-  it('deve retornar produtos por marca', async () => {
-    const products = [{ id: 1, brand: 'Circulo' }];
+  it('should return products by brand', async () => {
     req = { query: { brand: 'Circulo' } };
-    (productRepository.getProductsByBrand as jest.Mock).mockResolvedValue(products);
+    (productRepository.getProductsByBrand as jest.Mock).mockResolvedValue(product);
 
     await productController.getProducts(req as Request, res as Response, next);
 
     expect(productRepository.getProductsByBrand).toHaveBeenCalledWith('Circulo');
     expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(products);
+    expect(jsonMock).toHaveBeenCalledWith(product);
   });
 
-  it('deve retornar erro 404 se marca não for encontrada', async () => {
+  it('should return 404 status if brand not found', async () => {
     req = { query: { brand: 'Inexistente' } };
     (productRepository.getProductsByBrand as jest.Mock).mockResolvedValue([]);
 
@@ -71,19 +72,18 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith({ message: 'Brand Not Found' });
   });
 
-  it('deve retornar produtos por nome', async () => {
-    const products = [{ id: 2, name: 'Amigurumi' }];
+  it('should return product by name', async () => {
     req = { query: { name: 'Amigurumi' } };
-    (productRepository.getProductsByName as jest.Mock).mockResolvedValue(products);
+    (productRepository.getProductsByName as jest.Mock).mockResolvedValue(product);
 
     await productController.getProducts(req as Request, res as Response, next);
 
     expect(productRepository.getProductsByName).toHaveBeenCalledWith('Amigurumi');
     expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(products);
+    expect(jsonMock).toHaveBeenCalledWith(product);
   });
 
-  it('deve retornar erro 404 se nome não for encontrado', async () => {
+  it('should return 404 status if name not found', async () => {
     req = { query: { name: 'Inexistente' } };
     (productRepository.getProductsByName as jest.Mock).mockResolvedValue([]);
 
@@ -94,8 +94,7 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith({ message: 'Name Not Found' });
   });
 
-  it('deve retornar produto por tex', async () => {
-    const product = { id: 3, tex: 492 };
+  it('should return product by tex', async () => {
     req = { query: { tex: '492' } };
     (productRepository.getProductsByTex as jest.Mock).mockResolvedValue(product);
 
@@ -106,7 +105,7 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith(product);
   });
 
-  it('deve retornar erro 404 se produto por tex não for encontrado', async () => {
+  it('should return 404 status if tex not found', async () => {
     req = { query: { tex: '999' } };
     (productRepository.getProductsByTex as jest.Mock).mockResolvedValue(null);
 
@@ -117,22 +116,18 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith({ message: 'Product Not Found' });
   });
 
-  it('deve retornar produtos por faixa de tex', async () => {
-    const products = [
-      { id: 4, tex: 200 },
-      { id: 5, tex: 300 },
-    ];
+  it('should return product by tex range', async () => {
     req = { query: { texStart: '100', texEnd: '300' } };
-    (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValue(products);
+    (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValue(product);
 
     await productController.getProducts(req as Request, res as Response, next);
 
     expect(productRepository.getProductsByTexRange).toHaveBeenCalledWith(100, 300);
     expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(products);
+    expect(jsonMock).toHaveBeenCalledWith(product);
   });
 
-  it('deve retornar erro 404 se produtos por faixa de tex não forem encontrados', async () => {
+  it('should return 404 status if not exists products within the tex range', async () => {
     req = { query: { texStart: '1000', texEnd: '2000' } };
     (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValueOnce([]);
 
@@ -143,18 +138,17 @@ describe('productController.getProducts', () => {
     expect(jsonMock).toHaveBeenCalledWith({ message: 'Products Not Found' });
   });
 
-  it('deve retornar todos os produtos caso nenhum filtro seja passado', async () => {
-    const products = [{ id: 1 }, { id: 2 }];
+  it('dshould return all products', async () => {
     req = { query: {} };
-    (productRepository.getAllProducts as jest.Mock).mockResolvedValue(products);
+    (productRepository.getAllProducts as jest.Mock).mockResolvedValue(product);
 
     await productController.getProducts(req as Request, res as Response, next);
 
     expect(productRepository.getAllProducts).toHaveBeenCalled();
-    expect(jsonMock).toHaveBeenCalledWith(products);
+    expect(jsonMock).toHaveBeenCalledWith(product);
   });
 
-  it('deve retornar erro 500 em caso de exceção inesperada', async () => {
+  it('should return 500 status if unexpected exception', async () => {
     req = { query: { id: '1' } };
     (productRepository.getProductById as jest.Mock).mockRejectedValue(
       new Error('Internal Server Error')

@@ -27,7 +27,7 @@ export async function getProductsByTexQuery(tex: number) {
     throw { status: 400, message: 'Invalid TEX' };
   }
   const product = await productRepository.getProductsByTex(tex);
-  if (!product) throw { status: 404, message: 'Product Not Found' };
+  if (!product || !product.length) throw { status: 404, message: 'Product Not Found' };
   return product;
 }
 
