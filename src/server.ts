@@ -3,19 +3,19 @@ import sequelize from './database/sequelize';
 
 import { env } from './config/env';
 
-const PORT = parseInt(`${env.PORT || 3000}`);
+const PORT = parseInt(`${env.PORT}`);
 
 async function startServer() {
   try {
     await sequelize.authenticate();
-    console.log('Conexão com BD estabelecida com sucesso.');
+    console.log('Connection to DB successfully established.');
 
     await sequelize.sync({ force: false });
-    console.log('Sincronização do banco de dados concluída.');
+    console.log('Database synchronization complete.');
 
-    app.listen(PORT, () => console.log(`Servidor rodando em ${PORT}.`));
+    app.listen(PORT, () => console.log(`Server running on ${PORT}.`));
   } catch (error) {
-    console.error('Não foi possível conectar ao banco de dados:', error);
+    console.error('Could not connect to database', error);
   }
 }
 
