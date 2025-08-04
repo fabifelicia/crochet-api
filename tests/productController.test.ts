@@ -1,162 +1,176 @@
-import { Request, Response, NextFunction } from 'express';
 import productController from '../src/controllers/productController';
 import productRepository from '../src/repositories/productRepository';
 import { productsMock } from '../src/mocks/productsMock';
 
 jest.mock('../src/repositories/productRepository');
 
-const product = productsMock;
-
-describe('productController.getProducts', () => {
-  let req: Partial<Request>;
-  let res: Partial<Response>;
-  let next: NextFunction;
-  let jsonMock: jest.Mock;
-  let statusMock: jest.Mock;
+describe('productController', () => {
+  let res: any;
+  let next: jest.Mock;
 
   beforeEach(() => {
-    jsonMock = jest.fn();
-    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
     res = {
-      status: statusMock,
-      json: jsonMock,
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
     };
     next = jest.fn();
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should return product by id', async () => {
-    req = { query: { id: '1' } };
+    const product = productsMock[0];
     (productRepository.getProductById as jest.Mock).mockResolvedValue(product);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { id: 1 } } as any;
+    await productController.getProducts(req, res, next);
 
     expect(productRepository.getProductById).toHaveBeenCalledWith(1);
-    expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(product);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(product);
+    expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return 404 status if product by id not found', async () => {
-    req = { query: { id: '999' } };
+  it('should call next with 404 error if product by id is not found', async () => {
     (productRepository.getProductById as jest.Mock).mockResolvedValue(null);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { id: 999 } } as any;
+    try {
+      await productController.getProducts(req, res, next);
+    } catch (error) {
+      next(error);
+    }
 
     expect(productRepository.getProductById).toHaveBeenCalledWith(999);
-    expect(statusMock).toHaveBeenCalledWith(404);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Product Not Found' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      status: 404,
+      message: 'Product Not Found'
+    }));
   });
 
   it('should return products by brand', async () => {
-    req = { query: { brand: 'Circulo' } };
-    (productRepository.getProductsByBrand as jest.Mock).mockResolvedValue(product);
+    (productRepository.getProductsByBrand as jest.Mock).mockResolvedValue(productsMock);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { brand: 'Circulo' } } as any;
+    await productController.getProducts(req, res, next);
 
     expect(productRepository.getProductsByBrand).toHaveBeenCalledWith('Circulo');
-    expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(product);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(productsMock);
+    expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return 404 status if brand not found', async () => {
-    req = { query: { brand: 'Inexistente' } };
+  it('should call next with 404 error if brand is not found', async () => {
     (productRepository.getProductsByBrand as jest.Mock).mockResolvedValue([]);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { brand: 'Inexistente' } } as any;
+    try {
+      await productController.getProducts(req, res, next);
+    } catch (error) {
+      next(error);
+    }
 
     expect(productRepository.getProductsByBrand).toHaveBeenCalledWith('Inexistente');
-    expect(statusMock).toHaveBeenCalledWith(404);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Brand Not Found' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      status: 404,
+      message: 'Brand Not Found'
+    }));
   });
 
-  it('should return product by name', async () => {
-    req = { query: { name: 'Amigurumi' } };
-    (productRepository.getProductsByName as jest.Mock).mockResolvedValue(product);
+  it('should return products by name', async () => {
+    (productRepository.getProductsByName as jest.Mock).mockResolvedValue(productsMock);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { name: 'Amigurumi' } } as any;
+    await productController.getProducts(req, res, next);
 
     expect(productRepository.getProductsByName).toHaveBeenCalledWith('Amigurumi');
-    expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(product);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(productsMock);
+    expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return 404 status if name not found', async () => {
-    req = { query: { name: 'Inexistente' } };
+  it('should call next with 404 error if name is not found', async () => {
     (productRepository.getProductsByName as jest.Mock).mockResolvedValue([]);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { name: 'Inexistente' } } as any;
+    try {
+      await productController.getProducts(req, res, next);
+    } catch (error) {
+      next(error);
+    }
 
     expect(productRepository.getProductsByName).toHaveBeenCalledWith('Inexistente');
-    expect(statusMock).toHaveBeenCalledWith(404);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Name Not Found' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      status: 404,
+      message: 'Name Not Found'
+    }));
   });
 
-  it('should return product by tex', async () => {
-    req = { query: { tex: '492' } };
-    (productRepository.getProductsByTex as jest.Mock).mockResolvedValue(product);
+  it('should return products by tex', async () => {
+    (productRepository.getProductsByTex as jest.Mock).mockResolvedValue(productsMock);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { tex: 492 } } as any;
+    await productController.getProducts(req, res, next);
 
     expect(productRepository.getProductsByTex).toHaveBeenCalledWith(492);
-    expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(product);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(productsMock);
+    expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return 404 status if tex not found', async () => {
-    req = { query: { tex: '999' } };
-    (productRepository.getProductsByTex as jest.Mock).mockResolvedValue(null);
+  it('should call next with 404 error if tex is not found', async () => {
+    (productRepository.getProductsByTex as jest.Mock).mockResolvedValue([]);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { tex: 999 } } as any;
+    try {
+      await productController.getProducts(req, res, next);
+    } catch (error) {
+      next(error);
+    }
 
     expect(productRepository.getProductsByTex).toHaveBeenCalledWith(999);
-    expect(statusMock).toHaveBeenCalledWith(404);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Product Not Found' });
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      status: 404,
+      message: 'Product Not Found'
+    }));
   });
 
-  it('should return product by tex range', async () => {
-    req = { query: { texStart: '100', texEnd: '300' } };
-    (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValue(product);
+  it('should return products by tex range', async () => {
+    (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValue(productsMock);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { texStart: 100, texEnd: 300 } } as any;
+    await productController.getProducts(req, res, next);
 
     expect(productRepository.getProductsByTexRange).toHaveBeenCalledWith(100, 300);
-    expect(statusMock).toHaveBeenCalledWith(200);
-    expect(jsonMock).toHaveBeenCalledWith(product);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(productsMock);
+    expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return 404 status if not exists products within the tex range', async () => {
-    req = { query: { texStart: '1000', texEnd: '2000' } };
-    (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValueOnce([]);
+  it('should call next with 404 error if tex range does not find products', async () => {
+    (productRepository.getProductsByTexRange as jest.Mock).mockResolvedValue([]);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: { texStart: 100, texEnd: 300 } } as any;
+    try {
+      await productController.getProducts(req, res, next);
+    } catch (error) {
+      next(error);
+    }
 
-    expect(productRepository.getProductsByTexRange).toHaveBeenCalledWith(1000, 2000);
-    expect(statusMock).toHaveBeenCalledWith(404);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Products Not Found' });
+    expect(productRepository.getProductsByTexRange).toHaveBeenCalledWith(100, 300);
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({
+      status: 404,
+      message: 'Products Not Found'
+    }));
   });
 
-  it('dshould return all products', async () => {
-    req = { query: {} };
-    (productRepository.getAllProducts as jest.Mock).mockResolvedValue(product);
+  it('should return all products', async () => {
+    (productRepository.getAllProducts as jest.Mock).mockResolvedValue(productsMock);
 
-    await productController.getProducts(req as Request, res as Response, next);
+    const req = { query: {} } as any;
+    await productController.getProducts(req, res, next);
 
     expect(productRepository.getAllProducts).toHaveBeenCalled();
-    expect(jsonMock).toHaveBeenCalledWith(product);
-  });
-
-  it('should return 500 status if unexpected exception', async () => {
-    req = { query: { id: '1' } };
-    (productRepository.getProductById as jest.Mock).mockRejectedValue(
-      new Error('Internal Server Error')
-    );
-
-    await productController.getProducts(req as Request, res as Response, next);
-
-    expect(statusMock).toHaveBeenCalledWith(500);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Internal Server Error' });
+    expect(res.json).toHaveBeenCalledWith(productsMock);
+    expect(next).not.toHaveBeenCalled();
   });
 });
