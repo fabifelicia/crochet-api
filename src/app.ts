@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 
 import productRouter from './routers/productRouter';
+import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
 
@@ -16,9 +17,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Ok');
 });
 
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).send(error.message);
-});
+app.use(errorHandler);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not Found' });

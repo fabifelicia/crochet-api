@@ -45,43 +45,38 @@ export async function getAllProductsQuery() {
 }
 
 const getProducts: RequestHandler = async (req, res) => {
-  try {
-    if (req.query.id) {
-      const id = Number(req.query.id);
-      const product = await getProductByIdQuery(id);
-      res.status(200).json(product);
-      return;
-    }
-    if (req.query.brand) {
-      const products = await getProductsByBrandQuery(String(req.query.brand));
-      res.status(200).json(products);
-      return;
-    }
-    if (req.query.name) {
-      const products = await getProductsByNameQuery(String(req.query.name));
-      res.status(200).json(products);
-      return;
-    }
-    if (req.query.tex) {
-      const tex = Number(req.query.tex);
-      const product = await getProductsByTexQuery(tex);
-      res.status(200).json(product);
-      return;
-    }
-    if (req.query.texStart && req.query.texEnd) {
-      const texStart = Number(req.query.texStart);
-      const texEnd = Number(req.query.texEnd);
-      const product = await getProductsByTexRangeQuery(texStart, texEnd);
-      res.status(200).json(product);
-      return;
-    }
-
-    const products = await getAllProductsQuery();
-    res.json(products);
-  } catch (error) {
-    const err = error as { status?: number; message?: string };
-    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
+  if (req.query.id) {
+    const id = Number(req.query.id);
+    const product = await getProductByIdQuery(id);
+    res.status(200).json(product);
+    return;
   }
+  if (req.query.brand) {
+    const products = await getProductsByBrandQuery(String(req.query.brand));
+    res.status(200).json(products);
+    return;
+  }
+  if (req.query.name) {
+    const products = await getProductsByNameQuery(String(req.query.name));
+    res.status(200).json(products);
+    return;
+  }
+  if (req.query.tex) {
+    const tex = Number(req.query.tex);
+    const product = await getProductsByTexQuery(tex);
+    res.status(200).json(product);
+    return;
+  }
+  if (req.query.texStart && req.query.texEnd) {
+    const texStart = Number(req.query.texStart);
+    const texEnd = Number(req.query.texEnd);
+    const product = await getProductsByTexRangeQuery(texStart, texEnd);
+    res.status(200).json(product);
+    return;
+  }
+
+  const products = await getAllProductsQuery();
+  res.json(products);
 };
 
 export default {
