@@ -33,7 +33,7 @@ jobs:
 
       - name: Run tests
         env:
-          NODE_ENV: "test"
+          NODE_ENV: 'test'
         run: npm test
 
       - name: Build project

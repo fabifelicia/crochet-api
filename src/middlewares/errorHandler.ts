@@ -1,12 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, NextFunction } from 'express';
 import logger from '../config/logger';
 
-export function errorHandler(
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
   logger.error('Erro: %s | Stack: %s', err.message, err.stack);
 
   const status = err.status || 500;

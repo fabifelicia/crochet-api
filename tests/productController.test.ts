@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import productController from '../src/controllers/productController';
 import productRepository from '../src/repositories/productRepository';
 import { productsMock } from '../src/mocks/productsMock';
@@ -41,10 +42,12 @@ describe('productController', () => {
     }
 
     expect(productRepository.getProductById).toHaveBeenCalledWith(999);
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({
-      status: 404,
-      message: 'Product Not Found'
-    }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 404,
+        message: 'Product Not Found',
+      })
+    );
   });
 
   it('should return products by brand', async () => {
@@ -70,10 +73,12 @@ describe('productController', () => {
     }
 
     expect(productRepository.getProductsByBrand).toHaveBeenCalledWith('Inexistente');
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({
-      status: 404,
-      message: 'Brand Not Found'
-    }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 404,
+        message: 'Brand Not Found',
+      })
+    );
   });
 
   it('should return products by name', async () => {
@@ -99,10 +104,12 @@ describe('productController', () => {
     }
 
     expect(productRepository.getProductsByName).toHaveBeenCalledWith('Inexistente');
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({
-      status: 404,
-      message: 'Name Not Found'
-    }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 404,
+        message: 'Name Not Found',
+      })
+    );
   });
 
   it('should return products by tex', async () => {
@@ -128,10 +135,12 @@ describe('productController', () => {
     }
 
     expect(productRepository.getProductsByTex).toHaveBeenCalledWith(999);
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({
-      status: 404,
-      message: 'Product Not Found'
-    }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 404,
+        message: 'Product Not Found',
+      })
+    );
   });
 
   it('should return products by tex range', async () => {
@@ -157,10 +166,12 @@ describe('productController', () => {
     }
 
     expect(productRepository.getProductsByTexRange).toHaveBeenCalledWith(100, 300);
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({
-      status: 404,
-      message: 'Products Not Found'
-    }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 404,
+        message: 'Products Not Found',
+      })
+    );
   });
 
   it('should return all products', async () => {
