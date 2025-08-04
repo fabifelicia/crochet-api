@@ -6,10 +6,16 @@ import cors from 'cors';
 import productRouter from './routers/productRouter';
 import { errorHandler } from './middlewares/errorHandler';
 
+import { setupSwagger } from './docs/swagger';
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+if (process.env.NODE_ENV !== 'production') {
+  setupSwagger(app);
+}
 
 app.use('/products', productRouter);
 
