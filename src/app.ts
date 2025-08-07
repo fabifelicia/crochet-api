@@ -23,7 +23,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Ok');
 });
 
-app.use(errorHandler);
+app.use(errorHandler as unknown as express.ErrorRequestHandler);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not Found' });
