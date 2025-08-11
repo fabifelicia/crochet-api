@@ -15,9 +15,9 @@ const logger = createLogger({
         format.printf(({ level, message, timestamp, stack }) => {
           return `${timestamp} [${level}]: ${stack || message}`;
         })
-      )
-    })
-  ]
+      ),
+    }),
+  ],
 });
 
 export default logger;

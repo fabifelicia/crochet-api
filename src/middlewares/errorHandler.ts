@@ -1,18 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response, NextFunction } from 'express';
-import logger from '../config/logger';
 
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+import type { ErrorRequestHandler } from 'express';
+import logger from '../config/logger';
+import { AppError } from '../errors/AppError';
+
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   logger.error('Erro: %s | Stack: %s', err.message, err.stack);
 
-  const status = err.status || 500;
-  const message = err.message || 'Erro interno do servidor';
+  if (err instanceof AppError) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: err.status,
+      },
+    });
+    return;
+  }
 
-  res.status(status).json({
+  res.status(500).json({
     error: {
-      message,
-      status,
+      status: 500,
+      message: 'Internal Server Error',
     },
   });
-}
+};
