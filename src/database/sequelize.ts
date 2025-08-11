@@ -2,11 +2,10 @@ import { Sequelize } from 'sequelize';
 import { env } from '../config/env';
 import logger from '../config/logger';
 
-const connectionString =
-  env.NODE_ENV === 'production' ? env.DATABASE_URL! : env.DATABASE_PUBLIC_URL!;
+const connectionString = env.DATABASE_URL!;
 
 if (env.NODE_ENV !== 'test' && !connectionString) {
-  logger.error('DATABASE_URL not defined')
+  logger.error('DATABASE_URL not defined');
   throw new Error('DATABASE_URL not defined');
 }
 
