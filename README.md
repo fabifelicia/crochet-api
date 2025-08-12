@@ -10,6 +10,7 @@ API RESTful para gerenciamento de produtos de crochê, utilizando Node.js, TypeS
 - [Tecnologias](#tecnologias)
 - [Instalação](#instalação)
 - [Variáveis de Ambiente](#variáveis-de-ambiente)
+- [Execução com Docker Compose](#execução-com-docker-compose)
 - [Scripts](#scripts)
 - [Endpoints](#endpoints)
 - [Testes](#testes)
@@ -33,6 +34,7 @@ Esta API tem como objetivo fornecer uma interface para consulta e gerenciamento 
 - PostgreSQL
 - Jest (testes)
 - ESLint & Prettier (qualidade de código)
+- Docker & Docker Compose (containerização)
 
 ---
 
@@ -66,31 +68,17 @@ npm start
 
 ---
 
-## Populando o Banco de Dados
-
-Este projeto inclui um script para popular o banco de dados com dados iniciais para facilitar o desenvolvimento e testes.
-
-Para executar o script, rode:
-
-```bash
-npm run seed
-```
-
-Importante: Caso faça um fork ou clone do projeto, não esqueça de executar este script para garantir que o banco tenha os dados necessários.
-
----
-
 ## Variáveis de Ambiente
 
 Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
 ```env
-# URL de conexão para a API
-DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
-
-# Configurações da Aplicação
-PORT=3000
-NODE_ENV=development
+  PORT=3000
+  POSTGRES_USER=seu_usuario
+  POSTGRES_PASSWORD=sua_senha
+  POSTGRES_DB=seu_banco
+  DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+  NODE_ENV=development
 ```
 Um arquivo .env.example está disponível como referência.
 
@@ -99,6 +87,12 @@ Um arquivo .env.example está disponível como referência.
 ## Execução com Docker Compose
 
 Esta aplicação pode ser executada localmente usando Docker Compose, que sobe o banco de dados PostgreSQL e a API juntos.
+
+O banco de dados PostgreSQL será criado e populado automaticamente ao iniciar os containers com o Docker Compose.
+
+Isso acontece porque o script de popular os dados está configurado para rodar automaticamente na inicialização do container do banco.
+
+Para isso funcionar corretamente:
 
 1. Criar o arquivo .env
 
@@ -141,7 +135,6 @@ docker-compose down
 - `npm run lint` — Executa o ESLint para checagem de código.
 - `npm run format` — Formata o código usando Prettier.
 - `npm run test` — Executa os testes unitários com Jest.
-- `npm run seed` — Popula o banco de dados com dados iniciais.
 
 ---
 
