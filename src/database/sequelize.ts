@@ -3,6 +3,7 @@ import { env } from '../config/env';
 import logger from '../config/logger';
 
 const connectionString = env.DATABASE_URL!;
+const isProduction = env.NODE_ENV === 'production';
 
 if (env.NODE_ENV !== 'test' && !connectionString) {
   logger.error('DATABASE_URL not defined');
@@ -16,13 +17,15 @@ const sequelize =
         dialect: 'postgres',
         protocol: 'postgres',
         logging: false,
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-          keepAlive: true,
-        },
+        dialectOptions: isProduction
+          ? {
+              ssl: {
+                require: true,
+                rejectUnauthorized: false,
+              },
+              keepAlive: true,
+            }
+          : {},
       });
 
 export default sequelize;

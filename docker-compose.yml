@@ -9,10 +9,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      ports:
-        - "5432:5432"
-      volumes:
-        - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
   api:
     build:
       context: .
@@ -23,7 +23,7 @@ services:
       - .env 
     ports:    
       - "${PORT}:${PORT}"
-    command: sh -c "npm run seed && npm start"
+    command: ["ash", "-c", "npm run seed && npm start"]
 
 volumes:
-  db_data
+  db_data:
